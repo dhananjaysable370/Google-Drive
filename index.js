@@ -1,15 +1,19 @@
 const express = require('express');
+const dotenv = require('dotenv')
+const dbConnection = require('./config/db');
+const router = require('./routes/user.routes');
+dotenv.config()
 const app = express();
+
+dbConnection(process.env.MONGO_URI);
 
 app.use(express.json())
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-app.get('/', (req, res) => {
-    res.render('index.ejs')
-})
+app.use('/user',router)
 
-app.listen(3000, () => {
-    console.log(`Server listening on port 3000`);
+app.listen(process.env.PORT, () => {
+    console.log(`Server listening on port ${process.env.PORT}`);
 })
