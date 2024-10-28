@@ -1,8 +1,13 @@
+import { validationResult } from 'express-validator';
 import userModel from '../models/user.model.js';
 import bcrypt from 'bcrypt'
 
 export const createUser = async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
         const { username, email, password } = req.body;
         const existingUser = await userModel.findOne({ email });
         if (existingUser) {
@@ -13,7 +18,7 @@ export const createUser = async (req, res) => {
         if (!user) {
             return res.status(400).json({ message: 'Failed to create user' });
         }
-        res.status(200).json({ success: true, message: "User created successfully", user });
+        return res.status(200).json({ success: true, message: "User created successfully", user });
     } catch (error) {
         res.status(500).json({ success: false, message: "Internal Server Error!" });
     }
