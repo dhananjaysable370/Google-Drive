@@ -26,4 +26,9 @@ router.post('/login',
     body('password').trim().isLength({ min: 5 })
     , loginUser);
 
+
+router.get('/home', (req, res) => {
+    res.render('home.ejs')
+})
+
 export default router;
